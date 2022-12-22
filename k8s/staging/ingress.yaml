@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nestjs-boilerplate
+  namespace: empatnusabangsa-staging
+  annotations:
+    kubernetes.io/ingress.class: "traefik"
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+spec:
+  rules:
+    - host: "nestjs-boilerplate.k3s.bangun-kreatif.com"
+      http:
+        paths:
+          - pathType: Prefix
+            path: /
+            backend:
+              service:
+                name: nestjs-boilerplate
+                port:
+                  number: 5000
+  tls:
+    - hosts:
+        - "nestjs-boilerplate.k3s.bangun-kreatif.com"
+      secretName: nestjs-boilerplate-k3s-bangun-kreatif-com-tls

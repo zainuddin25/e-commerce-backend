@@ -1,0 +1,68 @@
+variables:
+  REGISTRY_URL: registry-harbor.app.bangun-kreatif.com
+  REGISTRY_IMAGE: $REGISTRY_URL/empatnusabangsa/nestjs-boilerplate
+  VERSION_STAGING: $CI_COMMIT_REF_NAME-$CI_PIPELINE_ID-$CI_COMMIT_SHORT_SHA
+  VERSION_PRODUCTION: $CI_COMMIT_REF_NAME-$CI_PIPELINE_ID-$CI_COMMIT_SHORT_SHA-production
+  DOCKER_HOST: tcp://docker:2375
+  DOCKER_TLS_CERTDIR: ""
+  DOCKER_DRIVER: overlay2
+
+stages:
+  - build-staging
+  - deploy-staging
+  - build-production
+  - deploy-production
+
+build-staging:
+  stage: build-staging
+  image: appuio/gitlab-runner-oc:3.11.0
+  only:
+    - devops-staging
+  services:
+    - docker:dind
+  script:
+    - docker login $REGISTRY_URL -u $BKA_REGISTRY_USER -p $BKA_REGISTRY_PASS
+    - docker build -t $REGISTRY_IMAGE:$VERSION_STAGING .
+    - docker push $REGISTRY_IMAGE:$VERSION_STAGING
+    - docker rmi $REGISTRY_IMAGE:$VERSION_STAGING
+
+deploy-staging:
+  stage: deploy-staging
+  image: dtzar/helm-kubectl
+  only:
+    - devops-staging
+  script:
+    - kubectl config set-cluster k8s --server="${BKA_CLUSTER_HOST}"
+    - kubectl config set clusters.k8s.certificate-authority-data ${BKA_CLUSTER_CA}
+    - kubectl config set-credentials gitlab --token="${BKA_CLUSTER_TOKEN}"
+    - kubectl config set-context default --cluster=k8s --user=gitlab
+    - kubectl config use-context default
+    - sed -i "s/<VERSION>/${VERSION_STAGING}/g" k8s/staging/deployment.yaml
+    - kubectl apply -f k8s/staging/deployment.yaml
+
+build-production:
+  stage: build-production
+  image: appuio/gitlab-runner-oc:3.11.0
+  only:
+    - devops-production
+  services:
+    - docker:dind
+  script:
+    - docker login $REGISTRY_URL -u $NWP_REGISTRY_USER -p $NWP_REGISTRY_PASS
+    - docker build -t $REGISTRY_IMAGE:$VERSION_PRODUCTION .
+    - docker push $REGISTRY_IMAGE:$VERSION_PRODUCTION
+    - docker rmi $REGISTRY_IMAGE:$VERSION_PRODUCTION
+
+deploy-production:
+  stage: deploy-production
+  image: dtzar/helm-kubectl
+  only:
+    - devops-production
+  script:
+    - kubectl config set-cluster k8s --server="${NWP_CLUSTER_HOST}"
+    - kubectl config set clusters.k8s.certificate-authority-data ${NWP_CLUSTER_CA}
+    - kubectl config set-credentials gitlab --token="${NWP_CLUSTER_TOKEN}"
+    - kubectl config set-context default --cluster=k8s --user=gitlab
+    - kubectl config use-context default
+    - sed -i "s/<VERSION>/${VERSION_PRODUCTION}/g" k8s/production/deployment.yaml
+    - kubectl apply -f k8s/production/deployment.yaml

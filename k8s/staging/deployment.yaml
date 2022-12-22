@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nestjs-boilerplate
+  namespace: empatnusabangsa-staging
+spec:
+  selector:
+    matchLabels:
+      app: nestjs-boilerplate
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: nestjs-boilerplate
+    spec:
+      containers:
+        - name: nestjs-boilerplate
+          image: registry-harbor.app.bangun-kreatif.com/empatnusabangsa/nestjs-boilerplate:<VERSION>
+          ports:
+            - containerPort: 5000
+          envFrom:
+            - secretRef:
+                name: nestjs-boilerplate-env
+      imagePullSecrets:
+        - name: regcred
+
