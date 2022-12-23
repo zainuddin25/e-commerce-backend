@@ -11,6 +11,10 @@ import { ProductService } from './product/product.service';
 import { ProductController } from './product/product.controller';
 import configuration from './config/configuration';
 import { ProductModule } from './product/product.module';
+import { MulterModule } from '@nestjs/platform-express';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
+import { ImagesModule } from './images/images.module';
 
 @Module({
   imports: [
@@ -77,10 +81,14 @@ import { ProductModule } from './product/product.module';
       },
       inject: [ConfigService],
     }),
+    MulterModule.register({
+      dest: '../uploads',
+    }),
     UsersModule,
     HealthModule,
     AuthModule,
-    ProductModule
+    ProductModule,
+    ImagesModule,
   ],
   controllers: [],
   providers: [],

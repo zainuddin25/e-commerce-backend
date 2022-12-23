@@ -16,4 +16,7 @@ export class AddProductDto {
 
     @IsNotEmpty()
     user: string
+
+    @IsNotEmpty()
+    image: string
 }

@@ -101,6 +101,7 @@ export class ProductService {
         product.category = addproductDto.category
         product.price = addproductDto.price
         product.user = findUser
+        product.image = addproductDto.image
         const result = await this.productRepository.insert(product)
 
         return this.productRepository.findOneOrFail({

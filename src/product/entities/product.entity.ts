@@ -18,6 +18,9 @@ export class Product {
     @Column()
     price: string
 
+    @Column()
+    image: string
+
     @ManyToOne(() => User, (user) => user.product)
     user: User
 }

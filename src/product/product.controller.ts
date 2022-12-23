@@ -1,11 +1,28 @@
-import { Controller, DefaultValuePipe, Get, HttpStatus, ParseIntPipe, ParseUUIDPipe } from '@nestjs/common';
+import { Controller, DefaultValuePipe, Get, HttpStatus, ParseIntPipe, ParseUUIDPipe, UploadedFile, UseInterceptors, Res } from '@nestjs/common';
 import { ProductService } from './product.service';
-import { Body, Delete, Param, Post, UseGuards, Put, Query } from '@nestjs/common/decorators';
+import { Body, Delete, Param, Post, UseGuards, Put, Query, Req, } from '@nestjs/common/decorators';
 import { AddProductDto } from './dto/product.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { EditProductDto } from './dto/editProduct.dto';
 import { Product } from './entities/product.entity';
-import { IPaginationLinks, IPaginationOptions, Pagination } from 'nestjs-typeorm-paginate';
+import { Pagination } from 'nestjs-typeorm-paginate';
+import { Roles } from 'src/users/role/roles.decorator';
+import { Role } from 'src/users/role/role.enum';
+import { RolesGuard } from 'src/users/role/roles.guard';
+import { FileInterceptor } from '@nestjs/platform-express'
+import { diskStorage } from 'multer';
+import { extname, join } from 'path';
+import { Observable, of } from 'rxjs'
+
+export const imgProduct = {
+    storage: diskStorage({
+      destination: './uploads/products'
+      , filename: (req, file, cb) => {
+        const randomName = Array(32).fill(null).map(() => (Math.round(Math.random() * 16)).toString(16)).join('')
+        cb(null, `${randomName}${extname(file.originalname)}`)
+      }
+    })
+}
 
 @Controller('product')
 export class ProductController {
@@ -23,9 +40,12 @@ export class ProductController {
         return this.productService.paginate({page, limit}, product_name);
     }
 
-    @UseGuards(AuthGuard('jwt'))
+    @UseGuards(AuthGuard('jwt'), RolesGuard)
+    @Roles(Role.Owner)
     @Get(':id')
-    async get(@Param('id', ParseUUIDPipe) id: string) {
+    async get(
+        @Param('id', ParseUUIDPipe) id: string,
+    ) {
         await this.productService.findOne(id)
 
         return this.productService.findOne(id)
@@ -33,6 +53,7 @@ export class ProductController {
 
     @UseGuards(AuthGuard('jwt'))
     @Post('add-product')
+    @UseInterceptors(FileInterceptor('file', imgProduct))
     async addProduct(@Body() addProductDto: AddProductDto) {
         return this.productService.addProduct(addProductDto)
     }
@@ -74,4 +95,14 @@ export class ProductController {
         }
     }
 
+    @Post('upload')
+    @UseInterceptors(FileInterceptor('file', imgProduct))
+    uploadFile(@UploadedFile() file: Express.Multer.File) {
+        return `${file.filename}`
+    }
+
+    @Get('image/:fileName')
+    findImage(@Param('fileName') fileName: string, @Res() res) {
+        return of(res.sendFile(join(process.cwd(), 'uploads/products/' + fileName)))
+    }
 }
