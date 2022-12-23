@@ -1,7 +1,9 @@
+import { ApiProperty } from "@nestjs/swagger";
 import { IsNotEmpty } from "class-validator";
 
 export class AddProductDto {
 
+    @ApiProperty()
     @IsNotEmpty()
     product_name: string
 

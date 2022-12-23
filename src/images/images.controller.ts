@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
+import { HttpStatus } from '@nestjs/common/enums';
 
 export const img = {
     storage: diskStorage({
@@ -24,8 +25,11 @@ export class ImagesController {
     @Post('upload')
     @UseInterceptors(FileInterceptor('file', img))
     uploadFile(@UploadedFile() file: Express.Multer.File) {
-        console.log(file);
-        console.log(file.path)
+        return {
+            data: file,
+            statusCode: HttpStatus.CREATED,
+            status: 'Success Uplaod'
+        }
     }
 
     
