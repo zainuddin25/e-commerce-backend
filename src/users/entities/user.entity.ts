@@ -12,6 +12,7 @@ import {
 } from 'typeorm';
 import { Role } from './role.entity';
 import { Product } from 'src/product/entities/product.entity';
+import { string } from 'joi';
 
 @Entity()
 export class User {
@@ -23,6 +24,12 @@ export class User {
 
   @Column()
   password: string;
+
+  @Column()
+  email: string;
+
+  @Column()
+  photo_profile: string
 
   @Column({ default: true })
   isActive: boolean;

@@ -48,7 +48,7 @@ export class UsersService {
   async findUser() {
     return await this.roleRepository.find({
       where : {
-        id: process.env.ROLE_OWNER,
+        id: process.env.ROLE_USER,
       }
     })
   }
@@ -69,6 +69,8 @@ export class UsersService {
     user.username = createUserDto.username,
     user.password = hashPassword,
     user.roles = userRole
+    user.email = createUserDto.email
+    user.photo_profile = createUserDto.photo_profile
 
     return await this.usersRepository.save(user)
   }

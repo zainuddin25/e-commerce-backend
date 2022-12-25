@@ -41,7 +41,7 @@ export class ProductController {
     }
 
     @UseGuards(AuthGuard('jwt'), RolesGuard)
-    @Roles(Role.Owner)
+    @Roles(Role.User)
     @Get(':id')
     async get(
         @Param('id', ParseUUIDPipe) id: string,
