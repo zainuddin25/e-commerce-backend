@@ -15,6 +15,8 @@ import { MulterModule } from '@nestjs/platform-express';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { ImagesModule } from './images/images.module';
+import { CategoryController } from './category/category.controller';
+import { CategoryModule } from './category/category.module';
 
 @Module({
   imports: [
@@ -89,8 +91,9 @@ import { ImagesModule } from './images/images.module';
     AuthModule,
     ProductModule,
     ImagesModule,
+    CategoryModule,
   ],
-  controllers: [],
+  controllers: [CategoryController],
   providers: [],
 })
 export class AppModule {}
