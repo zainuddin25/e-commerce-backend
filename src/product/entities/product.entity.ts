@@ -1,5 +1,6 @@
 import { User } from "src/users/entities/user.entity";
-import { Column, Entity, ManyToOne, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, OneToOne, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
+import { Category } from "src/category/entities/category.entity";
 
 @Entity()
 export class Product {
@@ -13,9 +14,6 @@ export class Product {
     ready_stock: number
 
     @Column()
-    category: string
-
-    @Column()
     price: string
 
     @Column()
@@ -23,4 +21,8 @@ export class Product {
 
     @ManyToOne(() => User, (user) => user.product)
     user: User
+
+    @ManyToOne(() => Category, category => category.product)
+    category: Category;
+
 }

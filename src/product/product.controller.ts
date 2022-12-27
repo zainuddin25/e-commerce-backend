@@ -41,7 +41,7 @@ export class ProductController {
     }
 
     @UseGuards(AuthGuard('jwt'), RolesGuard)
-    @Roles(Role.User)
+    // @Roles(Role.Saller, Role.Admin)
     @Get(':id')
     async get(
         @Param('id', ParseUUIDPipe) id: string,
@@ -51,7 +51,8 @@ export class ProductController {
         return this.productService.findOne(id)
     }
 
-    @UseGuards(AuthGuard('jwt'))
+    @UseGuards(AuthGuard('jwt'), RolesGuard)
+    @Roles(Role.Saller)
     @Post('add-product')
     @UseInterceptors(FileInterceptor('file', imgProduct))
     async addProduct(@Body() addProductDto: AddProductDto) {

@@ -1,10 +1,11 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { EntityNotFoundError, Repository } from 'typeorm';
+import { EntityNotFoundError, Repository, Like } from 'typeorm';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { Role } from './entities/role.entity';
 import * as bcrypt from 'bcrypt'
+import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
 
 @Injectable()
 export class UsersService {
@@ -16,6 +17,31 @@ export class UsersService {
     private roleRepository: Repository<Role>
   ) {}
 
+  async paginate(options: IPaginationOptions, username : string, role : string): Promise<Pagination<User>> {
+    if (role === 'all') {
+      return paginate<User>(this.usersRepository, options, {
+        where : {
+            username : Like(`%${username}%`)
+        },
+        relations: {
+            roles: true
+        }
+      });
+    } else {
+      return paginate<User>(this.usersRepository, options, {
+        where : {
+            username : Like(`%${username}%`),
+            roles: {
+              name: role
+            }
+        },
+        relations: {
+            roles: true
+        }
+      });
+    }
+  }
+  
   async findOne(id: string) {
     try {
       return await this.usersRepository.findOneOrFail({

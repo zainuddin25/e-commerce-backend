@@ -5,10 +5,11 @@ import { ProductController } from './product.controller';
 import { ProductService } from './product.service';
 import { JwtStrategy } from 'src/auth/guards/jwt.strategy';
 import { User } from 'src/users/entities/user.entity';
+import { Category } from 'src/category/entities/category.entity';
 
 @Module({
     imports: [
-        TypeOrmModule.forFeature([Product, User]),
+        TypeOrmModule.forFeature([Product, User, Category]),
     ],
     controllers: [ProductController],
     providers: [ProductService, JwtStrategy],

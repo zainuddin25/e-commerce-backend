@@ -11,9 +11,6 @@ export class AddProductDto {
     ready_stock: number
 
     @IsNotEmpty()
-    category: string
-
-    @IsNotEmpty()
     price: string
 
     @IsNotEmpty()
@@ -21,4 +18,7 @@ export class AddProductDto {
 
     @IsNotEmpty()
     image: string
+
+    @IsNotEmpty()
+    category: string
 }

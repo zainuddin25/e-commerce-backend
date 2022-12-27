@@ -9,8 +9,5 @@ export class EditProductDto {
     ready_stock: number
 
     @IsNotEmpty()
-    category: string
-
-    @IsNotEmpty()
     price: string
 }

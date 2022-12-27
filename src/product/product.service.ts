@@ -10,6 +10,7 @@ import {
     Pagination,
     IPaginationOptions,
 } from 'nestjs-typeorm-paginate'
+import { Category } from 'src/category/entities/category.entity';
 
 @Injectable()
 export class ProductService {
@@ -18,7 +19,10 @@ export class ProductService {
         private productRepository: Repository<Product>,
 
         @InjectRepository(User)
-        private userRepository: Repository<User>
+        private userRepository: Repository<User>,
+
+        @InjectRepository(Category)
+        private categoryRepository: Repository<Category>
     ) {}
 
     async paginate(options: IPaginationOptions, product_name : string): Promise<Pagination<Product>> {
@@ -96,12 +100,18 @@ export class ProductService {
             },
         })
 
+        const findCategory = await this.categoryRepository.findOneOrFail({
+            where: {
+                id: addproductDto.category
+            }
+        })
+
         product.product_name = addproductDto.product_name
         product.ready_stock = addproductDto.ready_stock
-        product.category = addproductDto.category
         product.price = addproductDto.price
         product.user = findUser
         product.image = addproductDto.image
+        product.category = findCategory
         const result = await this.productRepository.insert(product)
 
         return this.productRepository.findOneOrFail({
@@ -109,7 +119,8 @@ export class ProductService {
                 id: result.identifiers[0].id
             },
             relations: {
-                user: true
+                user: true,
+                category: true
             }
         })
     }
