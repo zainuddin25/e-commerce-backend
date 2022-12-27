@@ -35,13 +35,13 @@ export class ProductController {
     async index(
         @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
         @Query('limit', new DefaultValuePipe(8), ParseIntPipe) limit: number,
-        @Query('search', new DefaultValuePipe('')) product_name: string
+        @Query('search', new DefaultValuePipe('')) product_name: string,
+        @Query('category', new DefaultValuePipe('all')) category: string
     ): Promise<Pagination<Product>> {
-        return this.productService.paginate({page, limit}, product_name);
+        return this.productService.paginate({page, limit}, product_name, category);
     }
 
     @UseGuards(AuthGuard('jwt'), RolesGuard)
-    // @Roles(Role.Saller, Role.Admin)
     @Get(':id')
     async get(
         @Param('id', ParseUUIDPipe) id: string,

@@ -25,15 +25,31 @@ export class ProductService {
         private categoryRepository: Repository<Category>
     ) {}
 
-    async paginate(options: IPaginationOptions, product_name : string): Promise<Pagination<Product>> {
-        return paginate<Product>(this.productRepository, options, {
-            where : {
-                product_name : Like(`%${product_name}%`)
-            },
-            relations: {
-                user: true
-            }
-        });
+    async paginate(options: IPaginationOptions, product_name : string, category: string): Promise<Pagination<Product>> {
+        if (category === 'all') {
+            return paginate<Product>(this.productRepository, options, {
+                where : {
+                    product_name : Like(`%${product_name}%`)
+                },
+                relations: {
+                    user: true,
+                    category: true
+                }
+            });
+        } else {
+            return paginate<Product>(this.productRepository, options, {
+                where : {
+                    product_name : Like(`%${product_name}%`),
+                    category: {
+                        category_name: category
+                    }
+                },
+                relations: {
+                    user: true,
+                    category: true
+                }
+            });
+        }
     }
 
     async search(product_name: string) {
@@ -61,7 +77,8 @@ export class ProductService {
     async findAdll() {
         return this.productRepository.findAndCount({
             relations : {
-                user: true
+                user: true,
+                category: true
             }
         })
     }
