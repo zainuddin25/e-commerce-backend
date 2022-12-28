@@ -14,11 +14,11 @@ export class AddProductDto {
     price: string
 
     @IsNotEmpty()
-    user: string
-
-    @IsNotEmpty()
     image: string
 
     @IsNotEmpty()
     category: string
+
+    @IsNotEmpty()
+    toko: string
 }

@@ -1,6 +1,7 @@
 import { User } from "src/users/entities/user.entity";
 import { Column, Entity, ManyToOne, OneToOne, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
 import { Category } from "src/category/entities/category.entity";
+import { Toko } from "src/toko/entities/toko.entity";
 
 @Entity()
 export class Product {
@@ -19,10 +20,9 @@ export class Product {
     @Column()
     image: string
 
-    @ManyToOne(() => User, (user) => user.product)
-    user: User
-
     @ManyToOne(() => Category, category => category.product)
     category: Category;
 
+    @ManyToOne(() => Toko, (toko) => toko.product)
+    toko: Toko
 }

@@ -6,6 +6,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { Role } from './entities/role.entity';
 import * as bcrypt from 'bcrypt'
 import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
+import { UpdateRoleDto } from './dto/update-role.dto';
 
 @Injectable()
 export class UsersService {
@@ -24,7 +25,10 @@ export class UsersService {
             username : Like(`%${username}%`)
         },
         relations: {
-            roles: true
+            roles: true,
+            toko: {
+              product: true
+            }
         }
       });
     } else {
@@ -32,11 +36,14 @@ export class UsersService {
         where : {
             username : Like(`%${username}%`),
             roles: {
-              name: role
+              name: role,
             }
         },
         relations: {
-            roles: true
+            roles: true,
+            toko: {
+              product: true
+            }
         }
       });
     }
@@ -79,10 +86,19 @@ export class UsersService {
     })
   }
 
+  async findRoleSaller() {
+    return await this.roleRepository.find({
+      where: {
+        id: process.env.ROLE_SALLER
+      }
+    })
+  }
+
   async findAll() {
     return this.usersRepository.findAndCount({
       relations : {
-        roles: true
+        roles: true,
+        toko: true
       }
     })
   }
@@ -97,8 +113,42 @@ export class UsersService {
     user.roles = userRole
     user.email = createUserDto.email
     user.photo_profile = createUserDto.photo_profile
+    user.toko = null
 
     return await this.usersRepository.save(user)
+  }
+
+  async updateRoleSaller(id: string) {
+
+    try {
+      const roleSaller = await this.findRoleSaller()
+
+      const user = new User()
+      user.id = id,
+      user.roles = roleSaller
+
+      await this.usersRepository.save(user)
+
+      return this.usersRepository.findOneOrFail({
+        where: {
+          id: id
+        }, 
+        relations : {
+          roles : true
+        }
+      }) 
+    } catch (error) {
+      console.log(error)
+    }
+
+    // const roleSaller = await this.findRoleSaller()
+
+    
+    // const roleUpdate = new User()
+    // roleUpdate.roles = roleSaller
+    // roleUpdate.toko = updateRoleDto.toko
+
+    // return await this.usersRepository.update(id, roleUpdate)
   }
 
   async deleteUsers(id: string) {

@@ -17,6 +17,7 @@ import { Pagination } from 'nestjs-typeorm-paginate';
 import { User } from './entities/user.entity';
 import { of } from 'rxjs';
 import { join } from 'path';
+import { UpdateRoleDto } from './dto/update-role.dto';
 
 @Controller('users')
 export class UsersController {
@@ -47,6 +48,19 @@ export class UsersController {
   @Get('image/:fileName') 
   findImage(@Param('fileName') fileName: string, @Res() res) {
     return of(res.sendFile(join(process.cwd(), '/uploads/photo-profile/' + fileName)))
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Put('update-role/:id')
+  async update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateRoleDto: UpdateRoleDto
+  ) {
+    return {
+      data: await this.usersService.updateRoleSaller(id),
+      statusMessage: HttpStatus.OK,
+      status: 'Updated'
+    }
   }
 
 }

@@ -9,10 +9,12 @@ import {
   ManyToMany,
   JoinTable,
   OneToMany,
+  OneToOne,
+  ManyToOne,
+  JoinColumn,
 } from 'typeorm';
 import { Role } from './role.entity';
-import { Product } from 'src/product/entities/product.entity';
-import { string } from 'joi';
+import { Toko } from 'src/toko/entities/toko.entity';
 
 @Entity()
 export class User {
@@ -59,6 +61,6 @@ export class User {
   @JoinTable()
   roles: Role[];
 
-  @OneToMany(() => Product, (product) => product.user)
-  product: Product
+  @OneToOne(() => Toko, (toko) => toko.user)
+  toko: Toko
 }

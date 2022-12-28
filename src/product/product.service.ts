@@ -11,6 +11,7 @@ import {
     IPaginationOptions,
 } from 'nestjs-typeorm-paginate'
 import { Category } from 'src/category/entities/category.entity';
+import { Toko } from 'src/toko/entities/toko.entity';
 
 @Injectable()
 export class ProductService {
@@ -22,7 +23,10 @@ export class ProductService {
         private userRepository: Repository<User>,
 
         @InjectRepository(Category)
-        private categoryRepository: Repository<Category>
+        private categoryRepository: Repository<Category>,
+
+        @InjectRepository(Toko)
+        private tokoRepository: Repository<Toko>
     ) {}
 
     async paginate(options: IPaginationOptions, product_name : string, category: string): Promise<Pagination<Product>> {
@@ -32,7 +36,6 @@ export class ProductService {
                     product_name : Like(`%${product_name}%`)
                 },
                 relations: {
-                    user: true,
                     category: true
                 }
             });
@@ -45,7 +48,6 @@ export class ProductService {
                     }
                 },
                 relations: {
-                    user: true,
                     category: true
                 }
             });
@@ -57,9 +59,6 @@ export class ProductService {
             return await this.productRepository.findAndCount({
                 where: {
                     product_name : Like(`%${product_name}%`)
-                },
-                relations: {
-                    user: true
                 }
             })
         } catch(error) {
@@ -77,7 +76,6 @@ export class ProductService {
     async findAdll() {
         return this.productRepository.findAndCount({
             relations : {
-                user: true,
                 category: true
             }
         })
@@ -88,9 +86,6 @@ export class ProductService {
             return await this.productRepository.findOneOrFail({
                 where: {
                     id
-                },   
-                relations :{
-                    user: true
                 }
             })
         } catch (error) {
@@ -109,12 +104,11 @@ export class ProductService {
     }
 
     async addProduct(addproductDto: AddProductDto) {
-        const product = new Product();
 
-        const findUser = await this.userRepository.findOneOrFail({
+        const findToko = await this.tokoRepository.findOneOrFail({
             where: {
-                id: addproductDto.user
-            },
+                id: addproductDto.toko
+            }
         })
 
         const findCategory = await this.categoryRepository.findOneOrFail({
@@ -123,12 +117,13 @@ export class ProductService {
             }
         })
 
+        const product = new Product();
         product.product_name = addproductDto.product_name
         product.ready_stock = addproductDto.ready_stock
         product.price = addproductDto.price
-        product.user = findUser
         product.image = addproductDto.image
         product.category = findCategory
+        product.toko = findToko
         const result = await this.productRepository.insert(product)
 
         return this.productRepository.findOneOrFail({
@@ -136,7 +131,6 @@ export class ProductService {
                 id: result.identifiers[0].id
             },
             relations: {
-                user: true,
                 category: true
             }
         })
