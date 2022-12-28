@@ -12,7 +12,7 @@ import { RolesGuard } from 'src/users/role/roles.guard';
 import { FileInterceptor } from '@nestjs/platform-express'
 import { diskStorage } from 'multer';
 import { extname, join } from 'path';
-import { Observable, of } from 'rxjs'
+import { of } from 'rxjs'
 
 export const imgProduct = {
     storage: diskStorage({

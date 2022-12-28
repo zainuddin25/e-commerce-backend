@@ -1,6 +1,5 @@
 import { Controller, Post, UseGuards, Request, HttpStatus } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { LocalAuthGuard } from './guards/local-auth.guard';
 import { Body } from '@nestjs/common/decorators/http/route-params.decorator';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { LoginDto } from './dto/login.dto';
