@@ -14,7 +14,6 @@ import { ProductModule } from './product/product.module';
 import { MulterModule } from '@nestjs/platform-express';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
-import { ImagesModule } from './images/images.module';
 import { CategoryController } from './category/category.controller';
 import { CategoryModule } from './category/category.module';
 import { TokoModule } from './toko/toko.module';
@@ -91,7 +90,6 @@ import { TokoModule } from './toko/toko.module';
     HealthModule,
     AuthModule,
     ProductModule,
-    ImagesModule,
     CategoryModule,
     TokoModule,
   ],
