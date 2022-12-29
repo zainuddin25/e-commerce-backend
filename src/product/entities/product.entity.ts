@@ -1,5 +1,4 @@
-import { User } from "src/users/entities/user.entity";
-import { Column, Entity, ManyToOne, OneToOne, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Category } from "src/category/entities/category.entity";
 import { Toko } from "src/toko/entities/toko.entity";
 

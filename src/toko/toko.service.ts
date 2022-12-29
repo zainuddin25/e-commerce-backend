@@ -22,7 +22,7 @@ export class TokoService {
                 id: addTokoDto.user
             }
         })
-        
+
         const toko = new Toko()
         toko.toko_name = addTokoDto.toko_name,
         toko.user = findUser
