@@ -34,17 +34,6 @@ export class UsersController {
     return this.usersService.paginate({page, limit}, username, role);
   }
 
-  @UseGuards(AuthGuard('jwt'))
-  @Delete('delete/:id')
-  async delete(@Param('id', ParseUUIDPipe) id: string) {
-    await this.usersService.deleteUsers(id)
-
-    return {
-      statusCode: HttpStatus.OK,
-      message: 'Delete Success'
-    }
-  }
-
   @Get('image/:fileName') 
   findImage(@Param('fileName') fileName: string, @Res() res) {
     return of(res.sendFile(join(process.cwd(), '/uploads/photo-profile/' + fileName)))
@@ -63,4 +52,14 @@ export class UsersController {
     }
   }
 
+  @UseGuards(AuthGuard('jwt'))
+  @Delete('delete/:id')
+  async delete(@Param('id', ParseUUIDPipe) id: string) {
+    await this.usersService.deleteUsers(id)
+
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'Delete Success'
+    }
+  }
 }
