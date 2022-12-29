@@ -67,7 +67,8 @@ export class AuthService {
             const payload = await this.jwtService.signAsync({
                 id: existUser.id,
                 username: existUser.username,
-                role: existUser.roles
+                role: existUser.roles,
+                photo_profile: existUser.photo_profile
             })
 
             return payload

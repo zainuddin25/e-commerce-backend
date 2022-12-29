@@ -56,7 +56,10 @@ export class UsersService {
           id,
         },
         relations: {
-          roles: true
+          roles: true,
+          toko: {
+            product: true
+          }
         }
       });
     } catch (e) {
@@ -98,7 +101,9 @@ export class UsersService {
     return this.usersRepository.findAndCount({
       relations : {
         roles: true,
-        toko: true
+        toko: {
+          product: true
+        }
       }
     })
   }
@@ -134,21 +139,15 @@ export class UsersService {
           id: id
         }, 
         relations : {
-          roles : true
+          roles : true,
+          toko: {
+            product: true
+          }
         }
       }) 
     } catch (error) {
       console.log(error)
     }
-
-    // const roleSaller = await this.findRoleSaller()
-
-    
-    // const roleUpdate = new User()
-    // roleUpdate.roles = roleSaller
-    // roleUpdate.toko = updateRoleDto.toko
-
-    // return await this.usersRepository.update(id, roleUpdate)
   }
 
   async deleteUsers(id: string) {
