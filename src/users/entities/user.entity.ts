@@ -8,10 +8,7 @@ import {
   CreateDateColumn,
   ManyToMany,
   JoinTable,
-  OneToMany,
   OneToOne,
-  ManyToOne,
-  JoinColumn,
 } from 'typeorm';
 import { Role } from './role.entity';
 import { Toko } from 'src/toko/entities/toko.entity';
