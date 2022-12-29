@@ -23,18 +23,6 @@ export class CategoryController {
 
     constructor(private readonly categoryService: CategoryService) {}
 
-    @Post('image/category')
-    @UseInterceptors(FileInterceptor('file', imgCategory))
-    uploadImage(@UploadedFile() file : Express.Multer.File) {
-        return `${file.filename}`
-    }
-
-    @UseGuards(AuthGuard('jwt'))
-    @Post('add')
-    async addCategory(@Body() addCategoryDto: AddCategoryDto) {
-        return this.categoryService.addCatogory(addCategoryDto)
-    }
-
     @Get()
     async getAllProduct() {
         const [data, count] = await this.categoryService.getAll()
@@ -50,6 +38,18 @@ export class CategoryController {
     @Get('image/:fileName')
     findImage(@Param('fileName') fileName: string, @Res() res) {
         return of(res.sendFile(join(process.cwd(), 'uploads/category/' + fileName)))
+    }
+
+    @Post('image/category')
+    @UseInterceptors(FileInterceptor('file', imgCategory))
+    uploadImage(@UploadedFile() file : Express.Multer.File) {
+        return `${file.filename}`
+    }
+
+    @UseGuards(AuthGuard('jwt'))
+    @Post('add')
+    async addCategory(@Body() addCategoryDto: AddCategoryDto) {
+        return this.categoryService.addCatogory(addCategoryDto)
     }
 
 }
