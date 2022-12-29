@@ -1,5 +1,4 @@
 import { IsNotEmpty } from 'class-validator';
-import { string } from 'joi';
 
 export class CreateUserDto {
   @IsNotEmpty()
