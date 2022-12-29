@@ -6,7 +6,6 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { Role } from './entities/role.entity';
 import * as bcrypt from 'bcrypt'
 import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
-import { UpdateRoleDto } from './dto/update-role.dto';
 
 @Injectable()
 export class UsersService {
@@ -151,24 +150,24 @@ export class UsersService {
   }
 
   async deleteUsers(id: string) {
-    // try{
-    //   await this.usersRepository.findOneOrFail({
-    //     where: {
-    //       id
-    //     }
-    //   })
-    // } catch (error) {
-    //   if (error instanceof EntityNotFoundError) {
-    //     throw new HttpException({
-    //         statusCode: HttpStatus.NOT_FOUND,
-    //         message: 'User Not Found'
-    //       },
-    //       HttpStatus.NOT_FOUND
-    //     )
-    //   } else {
-    //     throw error
-    //   }
-    // }
+    try{
+      await this.usersRepository.findOneOrFail({
+        where: {
+          id
+        }
+      })
+    } catch (error) {
+      if (error instanceof EntityNotFoundError) {
+        throw new HttpException({
+            statusCode: HttpStatus.NOT_FOUND,
+            message: 'User Not Found'
+          },
+          HttpStatus.NOT_FOUND
+        )
+      } else {
+        throw error
+      }
+    }
 
     return this.usersRepository.delete(id)
   }
