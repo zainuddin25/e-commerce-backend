@@ -30,6 +30,7 @@ export class ProductController {
         private readonly productService: ProductService
     ) {}
 
+    // Get With Searh and Pagination
     @Get('')
     async index(
         @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
@@ -40,6 +41,7 @@ export class ProductController {
         return this.productService.paginate({page, limit}, product_name, category);
     }
 
+    // Get By ID
     @UseGuards(AuthGuard('jwt'), RolesGuard)
     @Get(':id')
     async get(
@@ -50,6 +52,13 @@ export class ProductController {
         return this.productService.findOne(id)
     }
 
+    // Get Image Product
+    @Get('image/:fileName')
+    findImage(@Param('fileName') fileName: string, @Res() res) {
+        return of(res.sendFile(join(process.cwd(), 'uploads/products/' + fileName)))
+    }
+
+    // Add Product
     @UseGuards(AuthGuard('jwt'), RolesGuard)
     @Roles(Role.Saller)
     @Post('add-product')
@@ -58,18 +67,18 @@ export class ProductController {
         return this.productService.addProduct(addProductDto)
     }
 
-    @UseGuards(AuthGuard('jwt'))
-    @Delete('delete/:id')
-    async delete(@Param('id', ParseUUIDPipe) id: string) {
-        await this.productService.deleteProduct(id)
-
-        return {
-            statusCode: HttpStatus.OK,
-            message: 'Delete Success'
-        }
+    // Add Image Product
+    @UseGuards(AuthGuard('jwt'), RolesGuard)
+    @Roles(Role.Saller)
+    @Post('upload')
+    @UseInterceptors(FileInterceptor('file', imgProduct))
+    uploadFile(@UploadedFile() file: Express.Multer.File) {
+        return `${file.filename}`
     }
 
-    @UseGuards(AuthGuard('jwt'))
+    // Edit Product
+    @UseGuards(AuthGuard('jwt'), RolesGuard)
+    @Roles(Role.Saller)
     @Put(':id')
     async editProduct(
     @Param('id', ParseUUIDPipe) id: string,
@@ -81,28 +90,17 @@ export class ProductController {
         }
     } 
 
-    @UseGuards(AuthGuard('jwt'))
-    @Get('search/:product_name')
-    async search(
-        @Param('product_name') product_name : string
-    ) {
-        const [data, count] = await this.productService.search(product_name)
+    // Delete Product
+    @UseGuards(AuthGuard('jwt'), RolesGuard)
+    @Roles(Role.Saller)
+    @Delete('delete/:id')
+    async delete(@Param('id', ParseUUIDPipe) id: string) {
+        await this.productService.deleteProduct(id)
+
         return {
-            data,
-            count,
             statusCode: HttpStatus.OK,
-            message: 'Success'
+            message: 'Delete Success'
         }
     }
 
-    @Post('upload')
-    @UseInterceptors(FileInterceptor('file', imgProduct))
-    uploadFile(@UploadedFile() file: Express.Multer.File) {
-        return `${file.filename}`
-    }
-
-    @Get('image/:fileName')
-    findImage(@Param('fileName') fileName: string, @Res() res) {
-        return of(res.sendFile(join(process.cwd(), 'uploads/products/' + fileName)))
-    }
 }
