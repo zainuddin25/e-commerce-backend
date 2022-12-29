@@ -30,7 +30,6 @@ export class ProductController {
         private readonly productService: ProductService
     ) {}
 
-    @UseGuards(AuthGuard('jwt'))
     @Get('')
     async index(
         @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
