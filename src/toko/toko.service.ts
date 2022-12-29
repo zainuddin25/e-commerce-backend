@@ -17,7 +17,6 @@ export class TokoService {
     ) {}
     
     async createToko(addTokoDto: AddTokoDto) {
-        
         const findUser = await this.userRespository.findOneOrFail({
             where: {
                 id: addTokoDto.user
@@ -27,11 +26,8 @@ export class TokoService {
         const toko = new Toko()
         toko.toko_name = addTokoDto.toko_name,
         toko.user = findUser
-
-        console.log(findUser)
         
         await this.tokoRepository.insert(toko)
-
         return this.tokoRepository.findOneOrFail({
             where: {
                 user: {
