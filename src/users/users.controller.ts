@@ -22,8 +22,7 @@ import { UpdateRoleDto } from './dto/update-role.dto';
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
-
-  @UseGuards(AuthGuard('jwt'))
+  
   @Get()
   async index(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page : number,

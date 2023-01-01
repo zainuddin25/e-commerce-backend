@@ -17,6 +17,7 @@ import { join } from 'path';
 import { CategoryController } from './category/category.controller';
 import { CategoryModule } from './category/category.module';
 import { TokoModule } from './toko/toko.module';
+import { DiscountModule } from './discount/discount.module';
 
 @Module({
   imports: [
@@ -92,6 +93,7 @@ import { TokoModule } from './toko/toko.module';
     ProductModule,
     CategoryModule,
     TokoModule,
+    DiscountModule,
   ],
   controllers: [CategoryController],
   providers: [],
