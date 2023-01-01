@@ -1,6 +1,7 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Category } from "src/category/entities/category.entity";
 import { Toko } from "src/toko/entities/toko.entity";
+import { Discount } from "src/discount/entities/discount.entity";
 
 @Entity()
 export class Product {
@@ -24,4 +25,7 @@ export class Product {
 
     @ManyToOne(() => Toko, (toko) => toko.product)
     toko: Toko
+
+    @OneToOne(() => Discount, (discount) => discount.product)
+    discount: Discount
 }

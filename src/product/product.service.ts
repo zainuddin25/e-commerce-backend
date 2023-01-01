@@ -12,6 +12,7 @@ import {
 } from 'nestjs-typeorm-paginate'
 import { Category } from 'src/category/entities/category.entity';
 import { Toko } from 'src/toko/entities/toko.entity';
+import { Discount } from 'src/discount/entities/discount.entity';
 
 @Injectable()
 export class ProductService {
@@ -26,7 +27,10 @@ export class ProductService {
         private categoryRepository: Repository<Category>,
 
         @InjectRepository(Toko)
-        private tokoRepository: Repository<Toko>
+        private tokoRepository: Repository<Toko>,
+
+        @InjectRepository(Discount)
+        private discountRepository: Repository<Discount>
     ) {}
 
     async paginate(options: IPaginationOptions, product_name : string, category: string): Promise<Pagination<Product>> {
@@ -36,7 +40,8 @@ export class ProductService {
                     product_name : Like(`%${product_name}%`)
                 },
                 relations: {
-                    category: true
+                    category: true,
+                    discount: true
                 }
             });
         } else {
@@ -48,7 +53,8 @@ export class ProductService {
                     }
                 },
                 relations: {
-                    category: true
+                    category: true,
+                    discount: true
                 }
             });
         }
@@ -76,7 +82,8 @@ export class ProductService {
     async findAdll() {
         return this.productRepository.findAndCount({
             relations : {
-                category: true
+                category: true,
+                discount: true
             }
         })
     }
@@ -117,6 +124,12 @@ export class ProductService {
             }
         })
 
+        const findDiscount = await this.discountRepository.findOneOrFail({
+            where: {
+                id: addproductDto.discount
+            }
+        })
+
         const product = new Product();
         product.product_name = addproductDto.product_name
         product.ready_stock = addproductDto.ready_stock
@@ -124,6 +137,8 @@ export class ProductService {
         product.image = addproductDto.image
         product.category = findCategory
         product.toko = findToko
+        // product.discount = findDiscount
+
         const result = await this.productRepository.insert(product)
 
         return this.productRepository.findOneOrFail({

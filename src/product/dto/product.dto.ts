@@ -21,4 +21,7 @@ export class AddProductDto {
 
     @IsNotEmpty()
     toko: string
+
+    @IsNotEmpty()
+    discount: string
 }

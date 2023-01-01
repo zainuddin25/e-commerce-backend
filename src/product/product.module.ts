@@ -7,10 +7,11 @@ import { JwtStrategy } from 'src/auth/guards/jwt.strategy';
 import { User } from 'src/users/entities/user.entity';
 import { Category } from 'src/category/entities/category.entity';
 import { Toko } from 'src/toko/entities/toko.entity';
+import { Discount } from 'src/discount/entities/discount.entity';
 
 @Module({
     imports: [
-        TypeOrmModule.forFeature([Product, User, Category, Toko]),
+        TypeOrmModule.forFeature([Product, User, Category, Toko, Discount]),
     ],
     controllers: [ProductController],
     providers: [ProductService, JwtStrategy],

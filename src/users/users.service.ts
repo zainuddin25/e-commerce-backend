@@ -26,7 +26,9 @@ export class UsersService {
         relations: {
             roles: true,
             toko: {
-              product: true
+              product: {
+                discount: true
+              }
             }
         }
       });
@@ -41,7 +43,9 @@ export class UsersService {
         relations: {
             roles: true,
             toko: {
-              product: true
+              product: {
+                discount: true
+              }
             }
         }
       });
